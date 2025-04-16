@@ -2,9 +2,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
@@ -95,10 +98,33 @@ public class Task1038Test {
         return dfs(current.left, current.val);
     }
 
+    public TreeNode bstToGstNoRecursion(TreeNode root) {
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode head = root;
+        int sum = 0;
+
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.push(root);
+                root = root.right;
+            }
+
+            TreeNode node = stack.pop();
+
+            int add = node.val;
+            node.val += sum;
+            sum += add;
+
+            root = node.left;
+        }
+
+        return head;
+    }
+
     @ParameterizedTest
     @MethodSource("testSource")
     void test(TreeNode root) {
-        traverseBinaryTreeDesc(root);
+        bstToGstNoRecursion(root);
     }
 
     static Stream<Arguments> testSource() {
